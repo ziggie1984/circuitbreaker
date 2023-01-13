@@ -1,0 +1,29 @@
+version: "3"
+services:
+  circuitbreakerd:
+    image: ghcr.io/lightningequipment/circuitbreaker:latest
+    container_name: circuitbreakerd
+    volumes:
+      - circuitbreaker:/root/.circuitbreaker
+      - /home/umbrel/umbrel/app-data/lightning/data/lnd/tls.cert:/root/.lnd/tls.cert
+      - /home/umbrel/umbrel/app-data/lightning/data/lnd/data/chain/bitcoin/mainnet/admin.macaroon:/root/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
+    entrypoint:
+      [
+        "--rpcserver umbrel.local:10009",
+        "--httplisten 0.0.0.0:9235",
+      ]
+    ports:
+      - "9235:9235"
+    restart: on-failure
+
+volumes:
+  circuitbreaker:
+    driver: local
+    name: "circuitbreaker_db"
+
+
+networks: 
+  default: 
+    external: 
+      name: umbrel_main_network 
+
