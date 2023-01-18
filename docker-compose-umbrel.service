@@ -10,7 +10,7 @@ RemainAfterExit=yes
 ExecStart=/usr/local/bin/docker-compose  -f /home/umbrel/umbrel/docker-compose-circuitbreaker.yml -p circuitbreaker up  -d
 ExecStop=/usr/local/bin/docker-compose  -f /home/umbrel/umbrel/docker-compose-circuitbreaker.yml -p circuitbreaker  down
 TimeoutStartSec=60
-TimeoutStopSeci=60
+TimeoutStopSec=60
 
 [Install]
 WantedBy=multi-user.target
