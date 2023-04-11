@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/lightningnetwork/lnd/routing/route"
@@ -160,12 +161,20 @@ func (p *process) Run(ctx context.Context) error {
 	})
 
 	group.Go(func() error {
-		err := p.processInterceptor(ctx, interceptor)
-		if err != nil {
-			return fmt.Errorf("interceptor error: %w", err)
-		}
+		for {
+			err := p.processInterceptor(ctx, interceptor)
+			if err != nil {
+				if strings.Contains(err.Error(), "connection reset by peer") {
+					// we don't want to fail because of this error.
+					fmt.Println("Found specific error message:", err)
+					continue
+				} else {
+					return fmt.Errorf("interceptor error: %w", err)
+				}
+			}
 
-		return err
+			return err
+		}
 	})
 
 	group.Go(func() error {
